@@ -1,0 +1,3 @@
+Download do Heroku:https://devcenter.heroku.com/articles/heroku-cli#install-the-heroku-cli
+tutorial bacana: https://blog.geekhunter.com.br/heroku/#:~:text=Heroku%20cli,-Para%20hospedar%20voc%C3%AA&text=Baixe%20se%20voc%C3%AA%20tiver%20windows,brew%20%26%26%20brew%20install%20heroku%20.
+Comandos do Git: https://blog.geekhunter.com.br/comandos-git-mais-utilizados/
