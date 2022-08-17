@@ -1,8 +1,8 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt">
 
 <head>
-  <title>Controle de Acesso a API - Usuários</title>
+  <title>Teste da API de Clientes</title>
   <meta charset="utf-8">
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <style type="text/css">
@@ -36,7 +36,7 @@
   <div id="cabecalho">
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container">
-            <a class="navbar-brand" href="index.html">Controle de Acesso a API - Usuários</a>
+            <a class="navbar-brand" href="index.html">Controle de Acesso a API de Clientes</a>
             <button class="navbar-toggler" 
                 type="button" 
                 data-toggle"collapse"
@@ -401,14 +401,16 @@
     function metodoGET() {
       event.preventDefault();
       $("#containerRegistros").empty();   
-      controlaTelaGET()
+      
 
       requestHTTPGET = new XMLHttpRequest();
       requestHTTPGET.onreadystatechange = function () {
-        if (requestHTTPGET.readyState == 4) {
-          if ((requestHTTPPOST.status != 200) && (requestHTTPPOST.status != 201)) {              
+        if (requestHTTPGET.readyState == 4) {   
+          if ((requestHTTPGET.status != 200) && (requestHTTPGET.status != 201)) {              
             let resultado = JSON.parse(requestHTTPGET.responseText);
             alert(requestHTTPGET.status + ' - ' + resultado.message);            
+          } else {
+            controlaTelaGET()
           }
         }
       };      

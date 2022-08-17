@@ -103,6 +103,7 @@ const checkToken = (req, res, next ) => {
     .from ('usuario')
     .where({ id: req.userId })
     .then ((usuarios) => {
+      console.log(usuarios.length);
         if (usuarios.length) {
             let usuario = usuarios[0]
             let roles = usuario.roles.split(';')
@@ -110,7 +111,7 @@ const checkToken = (req, res, next ) => {
             if (adminRole === 'ADMIN') {
                 next()
             }
-            else {
+            else { 
                 res.status(403).json({ message: 'Role de ADMIN requerida' })
             }
         }
