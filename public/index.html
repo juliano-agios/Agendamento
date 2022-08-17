@@ -1,0 +1,561 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <title>Controle de Acesso a API - Usuários</title>
+  <meta charset="utf-8">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style type="text/css">
+    #header {
+      background-color: blue;
+
+      margin: 0 auto;
+      width: 1200px;
+
+      padding: 1em;
+      border: 1px solid #CCC;
+      border-radius: 1em;
+    }
+
+    table {
+      border-collapse: collapse;
+      border-spacing: 0;
+    }
+
+    th,
+    tr {
+      padding: 10px 20px;
+      border: 1px solid #000;
+      width: 200px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body id="body" onload="controlaTela()">
+  <div id="cabecalho">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="index.html">Controle de Acesso a API - Usuários</a>
+            <button class="navbar-toggler" 
+                type="button" 
+                data-toggle"collapse"
+                data-target="#navCabecalho" 
+                aria-controls="#navCabecalho"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navCabecalho">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                <li class="nav-item"><a class="nav-link" href="index.html" data-tab="tab1">Início</a> </li>
+                <li class="nav-item"><a class="nav-link" href=# data-tab="tab2">Adicionar usuário</a></li>
+                <li class="nav-item"><a class="nav-link" href=# data-tab="tab3">Contato</a></li>
+            </ul>
+        </div>
+    </nav>
+  </div>
+
+  <div id="subCabecalhoInicial">
+    <header class="py-2 bg-light border-bottom mb-4">
+        <div class="container">   
+          <div class="input-group"></div>
+            <div class="text-center">
+                <h1>Bem vindo ao nosso portal!</h1>
+                <p>Teste de API - Cadastro de Clientes!</p>
+                <div>
+                  <button type="submit" class="w-180 btn btn-lg btn-primary mb-3 mt-3" id="btnPUT"
+                    onclick="metodoPUT()">PUT</button>
+                  <button type="submit" class="w-180 btn btn-lg btn-primary mb-3 mt-3" id="btnPOST"
+                    onclick="metodoPOST()">POST</button>
+                  <button type="submit" class="w-180 btn btn-lg btn-primary mb-3 mt-3" id="btnGET"
+                    onclick="metodoGET()">GET</button>
+                  <button type="submit" class="w-180 btn btn-lg btn-primary mb-3 mt-3" id="btnDELETE"
+                    onclick="metodoDELETE()">DELETE</button>
+                </div>
+            </div>
+            </div>
+        </div>
+    </header>
+ </div>
+
+  <div id="subCabecalhoContato">
+    <header class="py-2 bg-light border-bottom mb-4">
+        <div class="container">
+            <div class="text-center">
+                <h1>Dados de contato!</h1>
+                <p>Responsável: Juliano Caetano</p>
+                <p>Email: juliano.bhmg@gmail.com</p>
+                <p>Whatsapp: (31) 98803-4331</p>
+            </div>
+        </div>
+    </header>
+  </div>    
+
+  <div id="formUsuario">
+    <header class="py-2 bg-light border-bottom mb-4">
+      <div class="container mb-5">
+        <div class="text-center">
+          <h1>Bem vindo ao nosso portal!</h1>
+          <p>Adicionar Usuário!</p>        
+        <form>
+          <div class="form-floating mb-3">
+            <label for="usuarioNome">Nome</label>
+            <input type="text" class="form-control" id="usuarioNome" required>
+          </div>
+          <div class="form-floating mb-3">
+            <label for="usuarioEmail">Email</label>
+            <input type="text" class="form-control" id="usuarioEmail" required>
+          </div>          
+          <div class="form-floating mb-3">
+            <label for="usuarioLogin">Login</label>
+            <input type="text" class="form-control" id="usuarioLogin" required>
+          </div>
+          <div class="form-floating mb-3">
+            <label for="usuarioSenha">Senha</label>
+            <input type="text" class="form-control" id="usuarioSenha" required>
+          </div>
+          <div class="form-floating mb-3">
+            <label for="usuarioRoles">Grupos</label>
+            <input type="text" class="form-control" id="usuarioRoles" required>
+          </div>
+
+          <button type="submit" class="btn btn-primary mb-3" onclick="adicionarUsuario()">Adicionar
+            Usuário</button>
+        </form>
+      </div>  
+    </header>
+  </div> 
+
+  <div class="card mb-8" id="formMENU">    
+    <div class="card-body">
+      <div class="row">
+        <div class="input-group">
+
+          <div class="container-fluid " id="formGET">
+            <div class="row">
+              <div class="col-lg-8 mb-4">
+                <div class="row d-flex justify-content-center gap-3" id="containerRegistros">
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="container mb-5" id="formDELETE">
+            <form>
+              <div class="form-floating mb-3">
+                <label for="cpfExcluir">Cpf</label>
+                <input type="text" class="form-control" id="cpfExcluir" required>
+              </div>        
+              <button type="submit" class="btn btn-primary mb-3" onclick="excluirCliente()">Excluir cliente</button>
+            </form>
+          </div>
+
+          <div class="container mb-5" id="formPOST">
+            <form>
+              <div class="form-floating mb-3">
+                <label for="novoCPF">Cpf</label>
+                <input type="text" class="form-control" id="novoCPF" required>
+              </div>
+              <div class="form-floating mb-3">
+                <label for="novaNome">Nome</label>
+                <input type="text" class="form-control" id="novoNome" required>
+              </div>
+              <div class="form-floating mb-3">
+                <label for="novoEmail">Email</label>
+                <input type="text" class="form-control" id="novoEmail" required>
+              </div>
+              <button type="submit" class="btn btn-primary mb-3" onclick="adicionarCliente()">Adicionar
+                cliente</button>
+            </form>
+          </div>
+
+          <div class="container mb-5" id="formPUT">
+            <form>
+              <div class="form-floating mb-3">
+                <label for="updCPF">Cpf</label>
+                <input type="text" class="form-control" id="updCPF" required>
+              </div>
+              <div class="form-floating mb-3">
+                <label for="updNome">Nome</label>
+                <input type="text" class="form-control" id="updNome" required>
+              </div>
+              <div class="form-floating mb-3">
+                <label for="updEmail">Email</label>
+                <input type="text" class="form-control" id="updEmail" required>
+              </div>              
+              <button type="submit" class="btn btn-primary mb-3" onclick="alterarCliente()">Alterar
+                cliente</button>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div class="d-flex flex-row justify-content-center alig-items-center">
+      <div class="text-center">
+        <div class="shadow card card_form_input mt-3">
+          <main class="form-input w-100 m-auto">
+            <form>
+              <div class="login" id="idLogin">
+                <div class="form-floating">
+                  <input type="text" class="form-control" id="Usuario" placeholder="Usuário" required>
+                  <label for="Login">Usuário</label>
+                </div>
+                <div class="form-floating">
+                  <input type="password" class="form-control" id="Senha" placeholder="Senha" required>
+                  <label for="Password">Senha</label>
+                </div>
+                <button type="submit" class="w-80 btn btn-lg btn-primary mb-3 mt-3" id="btnAcessar"
+                  onclick="fazerLogin()">Acessar</button>
+              </div>
+            </form>
+          </main>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="py-3 bg-dark mt-3">
+    <div class="container">
+        <p class="m-0 text-center text-white">Copywrite &copy; Portal - 2022</p>
+    </div>
+  </footer>   
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+
+  <script>
+
+    //Controla menu superior.
+    $(document).on('click','.navbar-nav li a',function(){
+        var tab = $(this).data('tab');
+        $('.'+tab).trigger('click');    
+
+        if (tab == 'tab2') {
+            controlaTelaAdicionarUsuario();       
+            event.preventDefault();
+        }
+
+        if (tab == 'tab3') {
+            controlaTelaCONTATO();
+            event.preventDefault();
+        }
+        
+    });
+
+    function controlaTelaAdicionarUsuario() {
+      $("#idLogin").hide();
+      
+      $("#formMENU").hide();
+      $("#formDELETE").hide();
+      $("#formPOST").hide();      
+      $("#formPUT").hide();
+      $("#formGET").hide();
+
+      $("#subCabecalhoContato").hide();
+      $("#subCabecalhoInicial").hide();     
+      $("#formUsuario").show();     
+    }
+
+    function controlaTelaCONTATO() {
+      $("#idLogin").hide();
+
+      $("#formMENU").hide();      
+      $("#formDELETE").hide();
+      $("#formPOST").hide();      
+      $("#formPUT").hide();
+      $("#formGET").hide();
+
+      $("#subCabecalhoContato").show();
+      $("#subCabecalhoInicial").hide();  
+      $("#formUsuario").hide();            
+    }
+
+
+    function controlaTela() {
+      $("#idLogin").show();
+
+      $("#formDELETE").hide();
+      $("#formPOST").hide();      
+      $("#formPUT").hide();
+      $("#formGET").hide();
+
+      $("#subCabecalhoContato").hide();
+      $("#subCabecalhoInicial").hide();   
+      $("#formUsuario").hide();  
+        
+    }
+
+    function controlaTelaMENU() {
+      $("#idLogin").hide();
+
+      $("#formDELETE").hide();
+      $("#formPOST").hide();      
+      $("#formPUT").hide();
+      $("#formGET").hide();
+
+      $("#subCabecalhoInicial").show();  
+      $("#formUsuario").hide();          
+    }
+
+    function controlaTelaDELETE() {
+      $("#idLogin").hide();
+
+      $("#formDELETE").show();
+      $("#formPOST").hide();      
+      $("#formPUT").hide();
+      $("#formGET").hide();
+      
+      $("#subCabecalhoInicial").show();  
+      $("#formUsuario").hide();               
+    }
+
+    function controlaTelaPOST() {
+      $("#idLogin").hide();
+
+      $("#formDELETE").hide();
+      $("#formPOST").show();      
+      $("#formPUT").hide();
+      $("#formGET").hide();
+      
+      $("#subCabecalhoInicial").show();    
+      $("#formUsuario").hide();              
+    }
+    
+    function controlaTelaPUT() {
+      $("#idLogin").hide();
+
+      $("#formDELETE").hide();
+      $("#formPOST").hide();      
+      $("#formPUT").show();
+      $("#formGET").hide();
+      
+      $("#subCabecalhoInicial").show();   
+      $("#formUsuario").hide();              
+    }
+    
+    function controlaTelaGET() {
+      $("#idLogin").hide();
+
+      $("#formDELETE").hide();
+      $("#formPOST").hide();      
+      $("#formPUT").hide();
+      $("#formGET").show();
+      
+      $("#subCabecalhoInicial").show();    
+      $("#formUsuario").hide();             
+    }
+    
+    function fazerLogin() {
+    
+      const requestHTTP = new XMLHttpRequest();
+
+      requestHTTP.onreadystatechange = function () {
+        if (requestHTTP.readyState == 4) {
+          if ((requestHTTP.status == 200) || (requestHTTP.status == 201)) {
+            sessionStorage.setItem("token", requestHTTP.getResponseHeader('authorization'));
+            controlaTelaMENU()
+          } else {
+            let resultado = JSON.parse(requestHTTP.responseText);
+            alert(requestHTTP.status + ' - ' + resultado.message);
+          }
+        }
+      };
+      let jsonLogin = JSON.stringify({
+        login: Usuario.value,
+        senha: Senha.value
+      });
+      requestHTTP.open("POST", "/api/login", false);
+      requestHTTP.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+      requestHTTP.send(jsonLogin);
+
+      event.preventDefault();
+    }
+
+    function retornaToken() {
+      return sessionStorage.getItem("token");
+    }
+
+    function criarElemento(tipoElemento, valor) {
+      let resultado = document.createElement(tipoElemento);
+      resultado.innerHTML = valor;
+      return resultado;
+    }
+
+    function metodoPOST() {
+      controlaTelaPOST()
+    }
+
+    function metodoDELETE() {
+      controlaTelaDELETE()
+    }
+
+    function metodoPUT() {
+      controlaTelaPUT()
+    }
+
+    function metodoGET() {
+      event.preventDefault();
+      $("#containerRegistros").empty();   
+      controlaTelaGET()
+
+      requestHTTPGET = new XMLHttpRequest();
+      requestHTTPGET.onreadystatechange = function () {
+        if (requestHTTPGET.readyState == 4) {
+          if ((requestHTTPPOST.status != 200) && (requestHTTPPOST.status != 201)) {              
+            let resultado = JSON.parse(requestHTTPGET.responseText);
+            alert(requestHTTPGET.status + ' - ' + resultado.message);            
+          }
+        }
+      };      
+      requestHTTPGET.open("GET", "/api/clientes", false);
+      requestHTTPGET.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+      requestHTTPGET.setRequestHeader('Authorization', retornaToken());
+      requestHTTPGET.send();
+      let resultado = JSON.parse(requestHTTPGET.responseText);
+      let itens = resultado;
+      // Criando uma table no body
+      table = document.createElement('table'); //Tabela
+      let thead = document.createElement('thead'); //Cabeçalho da tabela
+      let tbody = document.createElement('tbody'); //Corpo da tabela
+
+      table.appendChild(thead);
+      table.appendChild(tbody);
+
+      //document.getElementById('body').appendChild(table);
+
+      // Cria o cabeçalho
+      let row_1 = document.createElement('tr');
+      row_1.appendChild(criarElemento('th', 'Cpf'));
+      row_1.appendChild(criarElemento('th', 'Nome'));
+      row_1.appendChild(criarElemento('th', 'E-mail'));
+             
+      thead.appendChild(row_1);
+      
+
+      for (var i = 0; i < itens.length; i++) {
+        let row_1 = document.createElement('tr');
+
+        row_1.appendChild(criarElemento('th', itens[i].cpf));
+        row_1.appendChild(criarElemento('th', itens[i].nome));
+        row_1.appendChild(criarElemento('th', itens[i].email));
+
+    
+        tbody.appendChild(row_1);       
+      }
+
+      $("#containerRegistros").append(table);
+    }
+
+    function adicionarUsuario() {
+      event.preventDefault();
+      requestHTTPPOST = new XMLHttpRequest();
+      requestHTTPPOST.onreadystatechange = function () {
+        if (requestHTTPPOST.readyState == 4) {
+
+          let resultado = JSON.parse(requestHTTPPOST.responseText);
+          alert(requestHTTPPOST.status + ' - ' + resultado.message);    
+          
+          //Limpa Formulário.
+          document.getElementById("usuarioNome").value = "";
+          document.getElementById("usuarioEmail").value = "";
+          document.getElementById("usuarioLogin").value = "";
+          document.getElementById("usuarioSenha").value = "";
+          document.getElementById("usuarioRole").value = "";
+
+        }
+      };
+      requestHTTPPOST.open("POST", "/api/register", false);
+      requestHTTPPOST.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+      let jsonUsuario = JSON.stringify({
+        nome: usuarioNome.value,
+        email: usuarioEmail.value,
+        login: usuarioLogin.value,
+        senha: usuarioSenha.value,
+        roles: usuarioRoles.value
+      });
+      requestHTTPPOST.send(jsonUsuario);
+    }
+
+
+    function adicionarCliente() {
+      event.preventDefault();
+      requestHTTPPOST = new XMLHttpRequest();
+      requestHTTPPOST.onreadystatechange = function () {
+        if (requestHTTPPOST.readyState == 4) {
+
+          let resultado = JSON.parse(requestHTTPPOST.responseText);
+          alert(requestHTTPPOST.status + ' - ' + resultado.message);
+
+          if ((requestHTTPPOST.status == 200) || (requestHTTPPOST.status == 201)) {                 
+            metodoGET();
+          } 
+        }
+      };
+
+      requestHTTPPOST.open("POST", "/api/clientes", false);
+      requestHTTPPOST.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+      requestHTTPPOST.setRequestHeader('Authorization', retornaToken());
+      let jsonCliente = JSON.stringify({
+        cpf: novoCPF.value,
+        nome: novoNome.value,
+        email: novoEmail.value
+      });
+      requestHTTPPOST.send(jsonCliente);
+    }
+
+    function alterarCliente() {
+      event.preventDefault();
+      requestHTTPPUT = new XMLHttpRequest();
+      requestHTTPPUT.onreadystatechange = function () {
+        if (requestHTTPPUT.readyState == 4) {
+
+          let resultado = JSON.parse(requestHTTPPUT.responseText);
+          alert(requestHTTPPUT.status + ' - ' + resultado.message);
+
+          if ((requestHTTPPUT.status == 200) || (requestHTTPPUT.status == 201)) {                 
+            metodoGET();
+          }
+        }
+      };
+      URL = "/api/clientes/" + updCPF.value;
+      requestHTTPPUT.open("PUT", URL, false);
+      requestHTTPPUT.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+      requestHTTPPUT.setRequestHeader('Authorization', retornaToken());
+      let jsonUpdCliente = JSON.stringify({
+        nome: updNome.value,
+        email: updEmail.value
+      });
+      requestHTTPPUT.send(jsonUpdCliente);
+    }
+
+    
+    function excluirCliente() {
+      event.preventDefault();
+      requestHTTPDELETE = new XMLHttpRequest();
+      requestHTTPDELETE.onreadystatechange = function () {
+        if (requestHTTPDELETE.readyState == 4) {
+          
+          let resultado = JSON.parse(requestHTTPDELETE.responseText);
+          alert(requestHTTPDELETE.status + ' - ' + resultado.message);
+
+          if ((requestHTTPDELETE.status == 200) || (requestHTTPDELETE.status == 201)) {                 
+            metodoGET();
+          }
+        }
+      };
+      URL = "/api/clientes/" + cpfExcluir.value;
+      requestHTTPDELETE.open("DELETE", URL, false);
+      requestHTTPDELETE.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+      requestHTTPDELETE.setRequestHeader('Authorization', retornaToken());
+      requestHTTPDELETE.send();
+    }
+
+  </script>
+</body>
+
+</html>
