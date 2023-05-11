@@ -37,3 +37,24 @@ select * from usuario;
 
 update usuario set senha = '$2a$08$Nj9Z6KQCz5sCsEkCADb9k.JIoH1v458nke2qfK3cfstUBjwO5NFjS' where nome = 'user';
 update usuario set senha = '$2a$08$lfHbHT65GVXh1T1YEOZozOBdom5TrlgooJrEIA40g34bmGVR8Bqsu' where nome = 'admin';
+
+
+MYSQL
+------
+
+CREATE TABLE public.usuario ( 
+    id   int NOT NULL AUTO_INCREMENT, 
+    nome varchar(200) NOT NULL, 
+    email varchar(100) NOT NULL, 
+    login varchar(100) NOT NULL, 
+    senha varchar(100) NOT NULL, 
+    roles varchar(200) NOT NULL DEFAULT 'USER', 
+    CONSTRAINT usuario_pk PRIMARY KEY (id) 
+); 
+
+CREATE TABLE public.cliente (
+    cpf int NOT NULL,
+    nome varchar(200) NOT NULL,
+    email varchar(200),
+    CONSTRAINT cliente_pk PRIMARY KEY (cpf)
+);

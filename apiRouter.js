@@ -1,9 +1,23 @@
 const express = require('express')
+const knex = require('knex');
 
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
 const apiRouter = express.Router()
 
+const config = {
+  client: 'mysql',
+  connection: {
+    host: 'database-agendamento.cjd9bny9v473.us-east-1.rds.amazonaws.com',
+    user: 'admin',
+    password: 'Linx3763',
+    database: 'public',
+  },
+};
+
+const db = knex(config);
+
+/*
 const knex = require ('knex') ({
     client: 'pg',
     connection: {
@@ -13,7 +27,7 @@ const knex = require ('knex') ({
       }
     }
   })
-
+*/
 // realiza log da requisição
 apiRouter.use('*', function(req, res, next) {
   console.log("req.method:", req.method)
@@ -27,7 +41,7 @@ apiRouter.use('*', function(req, res, next) {
 apiRouter.post ('/login', express.json(), (req,res) => {
   let user = req.body.login
   let pass = req.body.senha
-  knex
+  db
       .select ('*')
       .from ('usuario')
       .where ({ login: user})
@@ -65,7 +79,7 @@ apiRouter.post ('/login', express.json(), (req,res) => {
 
    
 apiRouter.post('/register', express.json(), (req,res) => {
-  knex('usuario')
+  db('usuario')
   .insert({
     nome:  req.body.nome,
     email: req.body.email,   
@@ -98,7 +112,7 @@ const checkToken = (req, res, next ) => {
   } 
 
   const isAdmin = (req, res, next ) => {
-    knex
+    db
     .select ('*')
     .from ('usuario')
     .where({ id: req.userId })
@@ -124,7 +138,7 @@ const checkToken = (req, res, next ) => {
     
   //Listar a lista de clientes
   apiRouter.get('/clientes', checkToken, isAdmin, function (req, res) {
-      knex
+      db
         .select('*')
         .from('cliente')
         .then(cliente => res.json(cliente))
@@ -133,7 +147,7 @@ const checkToken = (req, res, next ) => {
   apiRouter.get('/clientes/:cpf', checkToken, isAdmin, function (req, res) {
     let cpf = Number.parseInt(req.params.cpf)
   
-    knex
+    db
     .select('*')
     .from('cliente')
     .where ({ cpf: cpf})
@@ -150,7 +164,7 @@ const checkToken = (req, res, next ) => {
   
   //Incluir um cliente
   apiRouter.post('/clientes/', checkToken, isAdmin, function (req, res) {   
-    knex('cliente')
+    db('cliente')
     .insert({
       cpf: req.body.cpf,
       nome: req.body.nome,   
@@ -164,7 +178,7 @@ const checkToken = (req, res, next ) => {
   apiRouter.delete('/clientes/:cpf', checkToken, isAdmin, function (req, res) {
     let cpf = Number.parseInt(req.params.cpf);
     if (cpf > 0) {
-        knex('cliente')
+        db('cliente')
           .where('cpf', cpf)
           .del()
           .then(  res.status (200).json ( { message: "cliente excluído com sucesso." }))
@@ -177,7 +191,7 @@ const checkToken = (req, res, next ) => {
   apiRouter.put('/clientes/:cpf', checkToken, isAdmin, function (req, res) {  
     let cpf = Number.parseInt(req.params.cpf);
     if (cpf > 0) {
-        knex('cliente')
+        db('cliente')
             .where('cpf', cpf)
             .update({
                 nome: req.body.nome,

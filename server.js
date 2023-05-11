@@ -7,16 +7,6 @@ const { JsonWebTokenError } = require('jsonwebtoken')
 const apiRouter = require('./apiRouter')
 const port = process.env.PORT || 3000;
 
-const knex = require ('knex') ({
-  client: 'pg',
-  connection: {
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-      rejectUnauthorized: false
-    }
-  }
-})
-
 app.use(express.json ())
 app.use(express.urlencoded({ extended: true }));
 app.use('/api', apiRouter);
