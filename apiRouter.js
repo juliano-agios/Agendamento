@@ -38,6 +38,14 @@ apiRouter.use('*', function(req, res, next) {
   next ()
 })  
 
+  //Listar a lista de usuario
+apiRouter.get('/usuarios', checkToken, isAdmin, function (req, res) {
+    db
+      .select('*')
+      .from('usuario')
+      .then(usuario => res.json(usuario))
+})
+
 apiRouter.post ('/login', express.json(), (req,res) => {
   let user = req.body.login
   let pass = req.body.senha
@@ -50,13 +58,13 @@ apiRouter.post ('/login', express.json(), (req,res) => {
               let usuario = usuarios[0]
               let checkSenha = bcrypt.compareSync (pass, usuario.senha)
               if (checkSenha) {
-                  let token = jwt.sign ( { id: usuario.id}, 
+                  let token = jwt.sign ( { id: usuario.idusuario}, 
                                           process.env.SECRET_KEY, 
                                           {expiresIn: 30})                   
 
                   res.set('Authorization', token);
                   res.status(201).json ({
-                      id: usuario.id,
+                      id: usuario.idusuario,
                       login: usuario.login,
                       email: usuario.email,
                       roles: usuario.roles,
@@ -65,7 +73,7 @@ apiRouter.post ('/login', express.json(), (req,res) => {
                   res.end;              
               } else {    
                 res.statusCode = 200;
-                  res.status (200).json ({ id: usuario.id, token: token});   
+                  res.status (200).json ({ id: usuario.idusuario, token: token});   
                   res.end()
               }
           } else {          
