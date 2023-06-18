@@ -47,17 +47,45 @@ apiRouter.get('/usuarios',function (req, res) {
       .then(usuario => res.json(usuario))
 })
 
+  //Excluir um usuario
+apiRouter.delete('/usuario/:idusuario', function (req, res) { 
+  let idusuario = Number.parseInt(req.params.idusuario)
+
+  console.log("idusuario:")
+  console.log(idusuario)
+
+  if (idusuario > 0) {
+      db('usuario')
+        .where('idusuario', idusuario)
+        .del()
+        .then(  res.status (200).json ( { message: "usuario excluído com sucesso." }))
+  } else {
+    res.status (404).json ( { message: "Esse Usuário não existe." })
+  }  
+})
+
 apiRouter.post ('/login', express.json(), (req,res) => {
   let user = req.body.login
   let pass = req.body.senha
+
+  console.log("user:"+user)
+  console.log("pass:"+pass)
+
   db
       .select ('*')
       .from ('usuario')
       .where ({ login: user})
       .then ((usuarios) => {
-          if (usuarios.length) {
+          console.log("usuarios.length:"+usuarios.length)
+          if (usuarios.length > 0) {
+              console.log("if entrou")
+              console.log("usuario:"+usuarios)
               let usuario = usuarios[0]
+              console.log("usuario:"+usuario.senha)
+              console.log("pass:"+pass)
+
               let checkSenha = bcrypt.compareSync (pass, usuario.senha)
+              console.log("checkSenha:"+checkSenha)
               if (checkSenha) {
                   let token = jwt.sign ( { id: usuario.idusuario}, 
                                           process.env.SECRET_KEY, 
@@ -78,16 +106,17 @@ apiRouter.post ('/login', express.json(), (req,res) => {
                   res.end()
               }
           } else {          
-              res.status (401).json ({ message: "Usuario ou senha inválidos"})
+              res.status (401).json ({ message: "Usuario ou senha inválidos 01"})
               res.end()
           }
       })
-  .catch(err => res.status(500).json({ message: "Usuario ou senha inválidos" }))
+  .catch(err => res.status(500).json({ message: "Usuario ou senha inválidos 02" }))
 })
  
 
    
 apiRouter.post('/register', express.json(), (req,res) => {
+ 
   db('usuario')
   .insert({
     nome:  req.body.nome,
