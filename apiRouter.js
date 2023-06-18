@@ -3,7 +3,8 @@ const knex = require('knex');
 
 const jwt = require('jsonwebtoken')
 const bcrypt = require('bcryptjs')
-const apiRouter = express.Router()
+const 
+apiRouter = express.Router()
 
 const config = {
   client: 'mysql',
@@ -39,7 +40,7 @@ apiRouter.use('*', function(req, res, next) {
 })  
 
   //Listar a lista de usuario
-apiRouter.get('/usuarios', checkToken, isAdmin, function (req, res) {
+apiRouter.get('/usuarios',function (req, res) {
     db
       .select('*')
       .from('usuario')
@@ -145,7 +146,7 @@ const checkToken = (req, res, next ) => {
   }
     
   //Listar a lista de clientes
-  apiRouter.get('/clientes', checkToken, isAdmin, function (req, res) {
+  apiRouter.get('/clientes', function (req, res) {
       db
         .select('*')
         .from('cliente')
