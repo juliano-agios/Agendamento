@@ -9,26 +9,16 @@ apiRouter = express.Router()
 const config = {
   client: 'mysql',
   connection: {
-    host: 'database-agendamento.cjd9bny9v473.us-east-1.rds.amazonaws.com',
-    user: 'admin',
-    password: 'Linx3763',
+    host: process.env.HOST,
+    user: process.env.USER,
+    password: process.env.PASSWORD,
     database: 'public',
   },
 };
 
 const db = knex(config);
 
-/*
-const knex = require ('knex') ({
-    client: 'pg',
-    connection: {
-      connectionString: process.env.DATABASE_URL,
-      ssl: {
-        rejectUnauthorized: false
-      }
-    }
-  })
-*/
+
 // realiza log da requisição
 apiRouter.use('*', function(req, res, next) {
   console.log("req.method:", req.method)
