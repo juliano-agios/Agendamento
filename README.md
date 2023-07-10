@@ -20,6 +20,15 @@ Sistema de agendamento de horários de atendimento.
 - Implementação do GitHub Actions para pipelines CI/CD
 - Hospedagem da aplicação em ambiente AWS utilizando o serviço EC2 + RDS
 
+# Variáveis de Ambiente
+- HOST_BD ='Host do servidor de Banco de Dados'
+- USER_BD ='Usuário de acesso ao Banco de Dados'
+- PASSWORD_BD = 'Senha do usuário de acesso ao Banco de Dados'
+
+- HOST_API = 'EndPoint que a API Responde'
+- EMAIL = 'E-mail que irá enviar os e-mails da aplicação'
+- PASSWORD_EMAIL='Senha do e-mail que vai enviar as mensagens'
+
 # Diagrama de deployment
 ![image](https://github.com/juliano-agios/Agendamento/assets/106352568/77c582bd-0ed5-4b70-8f18-fafe2f0ac0c8)
 
