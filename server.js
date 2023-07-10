@@ -1,5 +1,5 @@
 const dotenv = require('dotenv');
-dotenv.config();
+dotenv.config();                          
 
 const express                    = require('express')
 const app                        = express()
@@ -12,6 +12,7 @@ const apiRouterAgendamento       = require('./Routes/apiRouterAgendamento')
 const apiRouterEnviarEmail       = require('./Routes/apiRouterEnviarEmail')
 
 const port = process.env.PORT || 3000;
+
 
 app.use(express.json ())
 app.use(express.urlencoded({ extended: true }));
@@ -34,7 +35,6 @@ app.use('/api/prestador', apiRouterPrestador);
 app.use('/api/servicosPrestados', apiRouterServicosPrestados);
 app.use('/api/agendamento', apiRouterAgendamento);
 app.use('/api/enviar-email', apiRouterEnviarEmail);
-
 app.use('/site', express.static('public'));
 
 // Inicializa o servidor HTTP na porta 3000
