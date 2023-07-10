@@ -3,9 +3,9 @@ const knex = require('knex');
 const config = {
     client: 'mysql',
     connection: {
-      host: process.env.HOST,
-      user: process.env.USER,
-      password: process.env.PASSWORD,
+      host: process.env.HOST_BD,
+      user: process.env.USER_BD,
+      password: process.env.PASSWORD_BD,
       database: 'public',
     },
   };
