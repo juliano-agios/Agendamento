@@ -3,10 +3,31 @@ const router = express.Router();
 const db = require('../Config/Database.js');
 
 router.get('/', async (req, res) => {
-    db
-    .select('*')
-    .from('servicosPrestados')
-    .then(servicosPrestados => res.json(servicosPrestados))
+  const { id, prestador_id, servico_id } = req.query;
+  let query = db.select('*').from('servicosPrestados');
+
+  if (id) {
+    query = query.where('id', id);
+  }
+  if (prestador_id) {
+    query = query.where('prestador_id', prestador_id);
+  }
+  if (servico_id) {
+    query = query.where('servico_id', servico_id);
+  }
+
+  query
+    .then(servicosPrestados => {res.json(servicosPrestados)})
+    .catch(err => res.status(500).json({ message: `Erro ao buscar servicos Prestados: ${err.message}` }));
+});
+
+
+router.get('/:prestador', async (req, res) => {
+  db
+  .select('*')
+  .from('servicosPrestados')
+  .where({ prestador_id: req.params.prestador })
+  .then(servicosPrestados => { res.json(servicosPrestados)})
 });
 
 router.post('/', async (req, res) => {

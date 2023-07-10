@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <title>Cadastro de Serviços Prestados</title>
+  <style>
+    .form-container {
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 5px;
+    }
+    .form-control-sm {
+      height: calc(1.5em + .5rem + 2px);
+      padding: .25rem .5rem;
+      font-size: .875rem;
+      line-height: 1.5;
+      border-radius: .2rem;
+    }    
+  </style>    
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+    <a class="navbar-brand text-white" href="#">Agios Agenda</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link text-white" href="#" id="voltar-link">Voltar</a>
+        </li>        
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <div class="row">      
+      <div class="col-lg-12 offset-lg-0">
+
+        <h2>Cadastro de Serviços Prestados</h2>
+
+        <hr>
+
+        <!-- Formulário de criação -->
+        <div class="form-container">
+          <h4>Adicionar Serviço Prestado</h4>
+          <form id="create-form">
+            <div class="form-group">
+              <label for="selectServico">Serviço:</label>
+              <select class="form-control form-control-sm" id="selectServico" required>
+                <!-- As opções serão preenchidas aqui -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="selectPrestador">Prestador:</label>
+              <select class="form-control form-control-sm" id="selectPrestador" required>
+                <!-- As opções serão preenchidas aqui -->
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="tempo">Tempo:</label>
+              <input type="text" class="form-control form-control-sm" id="tempo" required>
+            </div>
+            <button type="submit" class="btn btn-primary form-control-sm">Adicionar</button>
+          </form>
+        </div>
+
+      </div>
+    </div>
+  </div>        
+
+  <hr>
+
+  <div class="container mt-4">
+    <div class="form-container">
+      <div class="row">      
+        <div class="col-lg-12 offset-lg-0">  
+
+          <!-- Tabela de listagem -->
+          <div class="form-container">
+            <h4>Serviços Prestados Cadastrados</h4>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>ID</th>
+                    <th>Serviço</th>
+                    <th>Prestador</th>
+                    <th>Tempo</th>
+                    <th>Ações</th>
+                  </tr>
+                </thead>
+                <tbody id="table-body">
+                  <!-- Os registros serão preenchidos aqui -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  <script>
+    // URL base da API    
+    const apiUrl = window.location.origin+'/api';
+
+
+    function voltar() {
+      window.location.href = 'menu.html';
+    }    
+    document.getElementById('voltar-link').addEventListener('click', voltar);
+
+    // Função para carregar as opções de serviços
+    function loadServicos() {
+      $.get(`${apiUrl}/servico`, function(data) {
+        const selectServico = $('#selectServico');
+        selectServico.empty();
+
+        data.forEach(function(servico) {
+          const option = `<option value="${servico.id}">${servico.descricao}</option>`;
+          selectServico.append(option);
+        });
+      });
+    }
+
+    // Função para carregar as opções de prestadores
+    function loadPrestadores() {
+      $.get(`${apiUrl}/prestador`, function(data) {
+        const selectPrestador = $('#selectPrestador');
+        selectPrestador.empty();
+
+        data.forEach(function(prestador) {
+          const option = `<option value="${prestador.id}">${prestador.nome}</option>`;
+          selectPrestador.append(option);
+        });
+      });
+    }
+
+    // Função para carregar os serviços prestados
+    function loadServicosPrestados() {
+      $.get(`${apiUrl}/servicosprestados`, function(data) {
+        const tableBody = $('#table-body');
+        tableBody.empty();
+
+        data.sort((a, b) => a.id - b.id); // Ordenar por ID
+
+        data.forEach(function(servicoPrestado) {
+          // Buscar descrição do serviço pelo ID
+          $.get(`${apiUrl}/servico/${servicoPrestado.servico_id}`, function(servico) {
+            // Buscar nome do prestador pelo ID
+            $.get(`${apiUrl}/prestador/${servicoPrestado.prestador_id}`, function(prestador) {
+              const row = `
+                <tr>
+                  <td>${servicoPrestado.id}</td>
+                  <td>${servico.descricao}</td>
+                  <td>${prestador.nome}</td>
+                  <td>${servicoPrestado.tempo}</td>
+                  <td>
+                    <button class="btn btn-sm btn-primary edit-btn" data-id="${servicoPrestado.id}">Editar</button>
+                    <button class="btn btn-sm btn-danger delete-btn" data-id="${servicoPrestado.id}">Excluir</button>
+                  </td>
+                </tr>
+              `;
+              tableBody.append(row);
+            });
+          });
+        });
+      });
+    }
+
+    // Função para adicionar um serviço prestado
+    $('#create-form').submit(function(event) {
+      event.preventDefault();
+
+      const idServico = $('#selectServico').val();
+      const idPrestador = $('#selectPrestador').val();
+      const tempo = $('#tempo').val();
+
+      $.post(`${apiUrl}/servicosprestados`, { servico_id: idServico, prestador_id: idPrestador, tempo }, function() {
+        loadServicosPrestados();
+        $('#tempo').val('');
+      });
+    });
+
+    // Função para editar um serviço prestado
+    $(document).on('click', '.edit-btn', function() {
+      const id = $(this).data('id');
+      const tempo = prompt('Digite o novo tempo:', $(this).closest('tr').find('td:nth-child(4)').text());
+
+      if (tempo) {
+        $.ajax({
+          url: `${apiUrl}/servicosprestados/${id}`,
+          type: 'PUT',
+          data: { tempo },
+          success: function() {
+            loadServicosPrestados();
+          }
+        });
+      }
+    });
+
+    // Função para excluir um serviço prestado
+    $(document).on('click', '.delete-btn', function() {
+      const id = $(this).data('id');
+
+      if (confirm('Deseja realmente excluir este serviço prestado?')) {
+        $.ajax({
+          url: `${apiUrl}/servicosprestados/${id}`,
+          type: 'DELETE',
+          success: function() {
+            loadServicosPrestados();
+          }
+        });
+      }
+    });
+
+    // Carregar as opções de serviços e prestadores ao carregar a página
+    $(document).ready(function() {
+      loadServicos();
+      loadPrestadores();
+      loadServicosPrestados();
+    });
+
+    // Verificar se o usuário está logado
+    document.addEventListener('DOMContentLoaded', function() {
+      const login = localStorage.getItem('login');
+      const roles = localStorage.getItem('roles');
+
+      if (!login || !roles) {
+        alert('Você não está mais logado!');
+        window.location.href = 'index.html';
+      }
+    });     
+  </script>
+</body>
+
+</html>

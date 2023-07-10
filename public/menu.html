@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <title>Menu Principal</title>
+  <style>
+    .navbar-nav li {  
+      margin-right: 15px;
+    }
+    .form-container {
+      background-color: #f8f9fa;
+      padding: 20px;
+      border-radius: 5px;
+    }
+    
+  </style>
+</head>
+
+<body>
+  <div class="modal fade" id="emailModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content rounded-lg shadow-lg">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title" id="myModalLabel">Confirmação de Envio de Email</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fechar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Email enviado com sucesso!
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de confirmação de exclusão -->
+  <div class="modal fade" id="confirmModal" tabindex="-1" role="dialog" aria-labelledby="confirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content rounded-lg shadow-lg">
+        <div class="modal-header bg-danger text-white">
+          <h5 class="modal-title" id="confirmModalLabel">Confirmação de Exclusão</h5>
+          <button type="button" class="close text-white" data-dismiss="modal" aria-label="Fechar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          Tem certeza que deseja excluir este agendamento?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+          <button type="button" class="btn btn-danger" id="confirmDeleteBtn">Excluir</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+    <a class="navbar-brand text-white" href="#">Agios Agenda</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item" id="admin-menu" style="display: none;">
+          <a class="nav-link text-white" href="servico.html">Serviços</a>
+        </li>
+        <li class="nav-item" id="admin-menu" style="display: none;">
+          <a class="nav-link text-white" href="prestador.html">Prestador</a>
+        </li>
+        <li class="nav-item" id="admin-menu" style="display: none;">
+          <a class="nav-link text-white" href="servicosPrestados.html">Serviços Prestados</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="agendamento.html">Agendamento</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="#" id="logout-link">Sair</a>
+        </li>        
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container mt-4" id="agendamentos-container" style="display: none;">
+    <div class="row">      
+      <div class="col-lg-12 offset-lg-0">
+        <div class="form-container">
+          <h4>Agendamentos</h4>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>Horário</th>
+                  <th>Prestador</th>
+                  <th>Cliente</th>
+                  <th>Serviço</th>
+                  <th>Telefone</th>
+                  <th>Ações</th>
+                </tr>
+              </thead>
+              <tbody id="table-body">
+                <!-- Os registros serão preenchidos aqui -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  <script>
+
+    // URL base da API       
+    const apiUrl = window.location.origin+'/api';
+        
+    async function enviarEmail(id) {      
+
+      var agendamento = await $.get(`${apiUrl}/agendamento?id=${id}`);
+      var usuario     = await $.get(`${apiUrl}/usuario?id=${agendamento[0].usuario_id}`);
+
+      var dataAgendamento = new Date(agendamento[0].dataAgendamento).toLocaleDateString('pt-BR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+      });
+      
+      var mensagem = 'Olá ' + usuario[0].nome + ', o seu agendamento está próximo, Data: ' + dataAgendamento + ' Hora: ' +  agendamento[0].horaInicial + ' .Lembre-se de comparecer ou se precisar você também pode cancelar: ' + process.env.HOST_API + '/site/agendamento.html';
+      var titulo = 'Lembrete de Agendamento';
+
+      try {
+        $.post(`${apiUrl}/enviar-email`, {
+            email: usuario[0].email,
+            mensagem: mensagem,
+            titulo: titulo
+          });
+          $('#emailModal').modal('show');
+        } catch (error) {
+          console.error(error);
+          alert('Ocorreu um erro ao enviar o e-mail.');
+        }
+    };
+
+    // Função para realizar o logout
+    function logout() {
+      // Limpar o local storage
+      localStorage.removeItem('login');
+      localStorage.removeItem('roles');
+      localStorage.removeItem('nome');
+      localStorage.removeItem('telefone');
+      localStorage.removeItem('id_usuario');
+
+      // Redirecionar para a página index.html
+      window.location.href = 'index.html';
+    }
+
+    // Adicionar evento de clique ao link de sair
+    document.getElementById('logout-link').addEventListener('click', logout);
+
+    // Verificar se o usuário está logado
+    document.addEventListener('DOMContentLoaded', function() {
+      const login = localStorage.getItem('login');
+      const roles = localStorage.getItem('roles');
+
+      const agendamentosContainer = $('#agendamentos-container');
+      if (!login || !roles) {
+        alert('Você não está mais logado!');
+        window.location.href = 'index.html';
+      } else {
+        if (roles && roles.includes('admin')) {
+          const adminMenuItems = document.querySelectorAll('#admin-menu');
+          adminMenuItems.forEach(function(item) {
+            item.style.display = 'block';
+          });
+          agendamentosContainer.show();    
+        } 
+        else {
+          agendamentosContainer.hide();
+        }
+      }
+    });    
+
+    function loadMeusAgendamentos() {
+      $.get(`${apiUrl}/agendamento?situacao=0`, function(data) {
+
+        const tableBody = $('#table-body');
+        tableBody.empty();
+
+        data.forEach(async function(agendamento) {
+          const usuario = await $.get(`${apiUrl}/usuario?id=${agendamento.usuario_id}`);
+          var nomeCliente = usuario[0].nome;
+          var telefone = usuario[0].telefone;
+
+          const servicosPrestados = await $.get(`${apiUrl}/servicosPrestados?id=${agendamento.servicosPrestados_id}`);
+          
+          const servicoId = servicosPrestados[0].servico_id;
+          var servicos = await $.get(`${apiUrl}/servico?id=${servicoId}`);
+
+          const prestadorId = servicosPrestados[0].prestador_id;
+          var prestadores = await $.get(`${apiUrl}/prestador?id=${prestadorId}`);
+
+          var dataAgendamento = new Date(agendamento.dataAgendamento).toLocaleDateString('pt-BR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+          });
+
+          const row = `
+            <tr>
+              <td>${dataAgendamento}</td>
+              <td>${agendamento.horaInicial}</td>
+              <td>${prestadores[0].nome}</td>
+              <td>${nomeCliente}</td>
+              <td>${servicos[0].descricao}</td>
+              <td>${telefone}</td>
+
+              <td>                
+                <button class="btn btn-sm btn-danger delete-btn" data-id="${agendamento.id}">Excluir</button>
+                <button class="btn btn-sm btn-danger enviaEmail-btn" data-id="${agendamento.id}">Enviar Email</button>
+              </td>
+            </tr>
+          `;
+          tableBody.append(row);
+        });        
+      });
+    };
+
+    // Carregar os prestadores de serviço ao carregar a página
+    $(document).ready(function() {
+      loadMeusAgendamentos();
+    });
+
+    // Função para excluir o agendamento
+    $(document).on('click', '.delete-btn', function () {
+      const id = $(this).data('id');
+
+      $('#confirmModal').modal('show');
+
+      $('#confirmDeleteBtn').click(function() {
+        $.ajax({
+          url: `${apiUrl}/agendamento/${id}`,
+          type: 'DELETE',
+          success: function() {
+            $('#agendamentoModal').modal('show');
+
+            loadMeusAgendamentos();
+            loadHorarios();
+          }
+        });
+
+        $('#confirmModal').modal('hide');
+      });
+    });    
+
+    // Função para excluir o agendamento
+    $(document).on('click', '.enviaEmail-btn', function () {      
+      const id = $(this).data('id');
+      enviarEmail(id);
+    }); 
+
+  </script>
+
+</body>
+
+</html>

@@ -3,10 +3,35 @@ const router = express.Router();
 const db = require('../Config/Database.js');
 
 router.get('/', async (req, res) => {
-    db
-    .select('*')
-    .from('prestador')
-    .then(prestador => res.json(prestador))
+
+  const { id } = req.query;
+
+  let query = db.select('*').from('prestador');
+
+  if (id) {
+    query = query.where('id', id);
+  }
+  query
+    .then(prestadores => {res.json(prestadores)})
+    .catch(err => res.status(500).json({ message: `Erro ao buscar usuarios: ${err.message}` }));
+});
+
+
+router.get('/:id', async (req, res) => {
+    const id = req.params.id;
+    
+    try {
+      const servico = await db.select('*').from('prestador').where({ id }).first();
+      
+      if (!servico) {
+        return res.status(404).json({ message: 'Prestador não encontrado' });
+      }
+      
+      res.json(servico);
+    } catch (err) {
+      console.error(err);
+      res.sendStatus(500);
+    }
 });
 
 router.post('/', async (req, res) => {

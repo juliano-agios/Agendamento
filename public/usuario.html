@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+  <title>Usuários</title>
+  <style>
+    .form-box {
+      background-color: #f8f9fa;
+      border-radius: 5px;
+      padding: 20px;
+      margin-bottom: 20px;
+    }
+  </style>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-primary">
+    <a class="navbar-brand text-white" href="#">Agios Agenda</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+      aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link text-white" href="#" id="voltar-link">Voltar</a>
+        </li>        
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container mt-4">
+    <h2>Usuários</h2>
+    <hr>
+
+    <!-- Formulário de cadastro/editar usuário -->
+    <div class="form-box">
+      <form id="userForm">
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="nome">Nome:</label>
+            <input type="text" class="form-control" id="nome" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="email">Email:</label>
+            <input type="email" class="form-control" id="email" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="senha">Senha:</label>
+            <input type="password" class="form-control" id="senha" required>
+          </div>
+          <div class="form-group col-md-6">
+            <label for="roles">Função:</label>
+            <select class="form-control" id="roles" required>
+              <option value="user">Usuário</option>
+              <option value="admin">Administrador</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            <label for="telefone">Telefone:</label>
+            <input type="text" class="form-control" id="telefone">
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+
+      </form>
+    </div>
+
+    <!-- Mensagens de feedback -->
+    <div id="message"></div>
+
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+  <script>
+    // URL base da API    
+    const apiUrl = window.location.origin+'/api';
+
+    function voltar() {
+      window.location.href = 'index.html';
+    }    
+
+    document.getElementById('voltar-link').addEventListener('click', voltar);        
+    // Função para mostrar mensagens de feedback
+    function showMessage(message, type = 'success') {
+      const messageDiv = $('<div>').addClass(`alert alert-${type}`).attr('role', 'alert').text(message);
+      $('#message').html(messageDiv);
+    }
+
+    // Função para mostrar mensagens de erro
+    function showMessageError(message, type = 'danger') {
+      const messageDiv = $('<div>').addClass(`alert alert-${type}`).attr('role', 'alert').text(message);
+      $('#message').html(messageDiv);
+    }
+
+    // Função para limpar os campos do formulário
+    function clearForm() {
+      $('#userForm')[0].reset();
+      $('#userId').val('');
+    }
+
+     // Evento de submit do formulário
+    $('#userForm').submit(function(e) {
+      e.preventDefault();
+
+      const id = $('#userId').val();
+      const nome = $('#nome').val();
+      const email = $('#email').val();
+      const senha = $('#senha').val();
+      const roles = $('#roles').val();
+      const telefone = $('#telefone').val();
+
+      let url = `${apiUrl}/usuario`;
+      let method = 'POST';
+
+      if (id) {
+        url += `/${id}`;
+        method = 'PUT';
+      }
+
+      $.ajax({
+        url,
+        type: method,
+        data: {
+          nome,
+          email,
+          senha,
+          roles,
+          telefone
+        },
+        success: function(response) {
+          showMessage(response.message);
+          clearForm();
+        },
+        error: function(xhr, status, error) {
+          const errorMessage = JSON.parse(xhr.responseText).message;
+          showMessageError(errorMessage);
+        }        
+      });
+    });
+  </script>
+</body>
+
+</html>
