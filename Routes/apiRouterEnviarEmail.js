@@ -6,6 +6,13 @@ router.post('/', async (req, res) => {
 
   var { email, titulo, mensagem } = req.body;
 
+  if (!email) {
+    // No formulário de contato não sabe para quem do fornecedor vai ser enviado a mensagem de contato
+    // neste caso irá passar vazio e pegar a variavel d ambiente
+    // Obter o valor da variável de ambiente
+    email = process.env.EMAIL;
+  }
+
   enviarEmail(email, titulo, mensagem)
     .then(() => {
       res.status(200).json({ message: 'E-mail enviado com sucesso' });
@@ -24,13 +31,13 @@ function enviarEmail(email, titulo, mensagem) {
         port: 465,
         secure: true, // Usar SSL/TLS
         auth: {
-          user: 'agenda@agios.tech', // Seu endereço de e-mail
+          user: process.env.EMAIL, // Seu endereço de e-mail
           pass: process.env.PASSWORD_EMAIL // Sua senha de e-mail
         }
       });      
     
       const mailOptions = {
-        from: 'agenda@agios.tech',
+        from: process.env.EMAIL,
         to: email,
         subject: titulo,
         text: mensagem

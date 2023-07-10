@@ -124,7 +124,7 @@
 
       try {
         $.post(`${apiUrl}/enviar-email`, {
-            email: 'agenda@agios.tech',
+            email: '', //´Será utilizado o e-mail da variavel de ambiente pelo back end
             titulo: titulo,
             mensagem: mensagem
           });
