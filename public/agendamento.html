@@ -73,7 +73,7 @@
           Seu horário foi agendado com sucesso!
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Fechar</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" id="btnFecharConfirmacaoAgendamento">Fechar</button>
         </div>
       </div>
     </div>
@@ -403,6 +403,10 @@
       loadHorarios();
     });
 
+    $('#btnFecharConfirmacaoAgendamento').click(function() {
+      location.reload();
+    });
+
     $('#agendarBtn').click(async function() {
       const selectedPrestador = $('#selectPrestador').val();
       const selectedServico = $('#selectServico').val();
@@ -439,7 +443,7 @@
 
         loadHorarios();
         loadMeusAgendamentos();
-        location.reload();
+
 
 
       } catch (error) {

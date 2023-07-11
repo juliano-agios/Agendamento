@@ -134,8 +134,8 @@
             month: '2-digit',
             day: '2-digit'
       });
-      
-      var mensagem = 'Olá ' + usuario[0].nome + ', o seu agendamento está próximo, Data: ' + dataAgendamento + ' Hora: ' +  agendamento[0].horaInicial + ' .Lembre-se de comparecer ou se precisar você também pode cancelar: ' + process.env.HOST_API + '/site/agendamento.html';
+
+      var mensagem = 'Olá ' + usuario[0].nome + ', o seu agendamento está próximo, Data: ' + dataAgendamento + ' Hora: ' +  agendamento[0].horaInicial + ' .Lembre-se de comparecer ou se precisar você também pode cancelar: ' + window.location.origin + '/site/agendamento.html';
       var titulo = 'Lembrete de Agendamento';
 
       try {
@@ -254,7 +254,6 @@
             $('#agendamentoModal').modal('show');
 
             loadMeusAgendamentos();
-            loadHorarios();
           }
         });
 
